@@ -8,6 +8,13 @@ import Cookies from 'js-cookie';
 import { useGoogleLogin } from '@react-oauth/google';
 import { RingLoader } from 'react-spinners';
 
+const DEV_MODE = true;
+const DEV_ADMIN_COMPANY_ID = 'dev-admin-company-id';
+const DEV_ADMIN_TOKEN = 'dev-admin-token';
+const DEV_EMP_TOKEN = 'dev-emp-token';
+const DEV_EMP_COMPANY_ID = 'dev-emp-company-id';
+const DEV_EMP_ROLE = 'staff';
+
 function SignIn() {
   const responseGoogle = response => {
     console.log(response);
@@ -16,6 +23,21 @@ function SignIn() {
   const [choice, setChoice] = useState('Admin');
   const navigate = useNavigate();
   const [popup, setPopup] = useState(false);
+
+  const devLoginAdmin = () => {
+    Cookies.set('companyID', DEV_ADMIN_COMPANY_ID);
+    Cookies.set('Token', DEV_ADMIN_TOKEN);
+    toast.success('DEV: Logged in as Admin');
+    navigate('/dashboard');
+  };
+
+  const devLoginEmployee = () => {
+    Cookies.set('EmpToken', DEV_EMP_TOKEN);
+    Cookies.set('empCompanyID', DEV_EMP_COMPANY_ID);
+    Cookies.set('Role', DEV_EMP_ROLE);
+    toast.success('DEV: Logged in as Employee');
+    navigate('/emp-dashboard');
+  };
 
   const [formData, setFormData] = useState({
     password: '',
@@ -137,6 +159,24 @@ function SignIn() {
     <div className="signInContainer">
       <h1 className="text">Welcome Back</h1>
       <p className="text_2">We’ve missed you so much</p>
+
+      {DEV_MODE && (
+        <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', marginBottom: '12px' }}>
+          <button
+            onClick={devLoginAdmin}
+            style={{ background: '#e65c00', color: '#fff', border: 'none', borderRadius: '6px', padding: '8px 16px', cursor: 'pointer', fontWeight: 'bold' }}
+          >
+            DEV: Admin Login
+          </button>
+          <button
+            onClick={devLoginEmployee}
+            style={{ background: '#1a73e8', color: '#fff', border: 'none', borderRadius: '6px', padding: '8px 16px', cursor: 'pointer', fontWeight: 'bold' }}
+          >
+            DEV: Employee Login
+          </button>
+        </div>
+      )}
+
       <div className="googleSignInButton">
         <button onClick={googleLogin}>
           {isLoading ? (
